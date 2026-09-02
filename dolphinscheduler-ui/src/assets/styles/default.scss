@@ -1,0 +1,272 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+* {
+  outline: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  //scrollbar-width: none;
+  //-ms-overflow-style: none;
+  //::-webkit-scrollbar {
+  //  display: none;
+  //}
+}
+
+html,
+body,
+p,
+dl,
+dd,
+dt {
+  margin: 0;
+  padding: 0;
+}
+
+/* Apple Style Global Overrides (FamilyInv Style) */
+.n-layout, .n-layout-scroll-container {
+  background-color: #f5f5f7 !important;
+}
+
+.n-layout-sider, .n-layout-header {
+  background-color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.n-layout-sider {
+  border-right: 1px solid rgba(0,0,0,0.03) !important;
+}
+
+.n-layout-header {
+  border-bottom: 1px solid rgba(0,0,0,0.03) !important;
+}
+
+/* Dark Mode Overrides for Layout Containers */
+html.dark .n-layout, html.dark .n-layout-scroll-container {
+  background-color: #141414 !important;
+}
+
+html.dark .n-layout-sider, html.dark .n-layout-header {
+  background-color: rgb(24, 24, 28) !important;
+  border-color: rgba(255, 255, 255, 0.09) !important;
+}
+
+/* Dark mode text color overrides for bottom buttons */
+html.dark .n-layout-sider button.n-button, 
+html.dark .n-layout-sider button.n-button .n-icon {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+html.dark .n-layout-sider button.n-button:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Dark mode overrides for cards and tables */
+html.dark .n-data-table {
+  background: rgb(24, 24, 28) !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2) !important;
+}
+html.dark .n-data-table-th {
+  background-color: rgb(24, 24, 28) !important;
+  color: rgba(255, 255, 255, 0.82) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.09) !important;
+}
+html.dark .n-card {
+  background: rgb(24, 24, 28) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+}
+
+.n-menu .n-menu-item-content {
+  border-radius: 12px !important;
+  margin: 2px 6px !important;
+  transition: all 0.2s ease !important;
+}
+
+.n-menu .n-menu-item-content:hover {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+  transform: scale(0.99) !important; 
+}
+html.dark .n-menu .n-menu-item-content:hover {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.n-menu .n-menu-item-content--selected, .n-menu-item--selected, .n-menu-item-content--child-active {
+  background-color: #f4f5f7 !important;
+  color: #111111 !important;
+  font-weight: 600 !important;
+  border-left: none !important;
+  box-shadow: none !important;
+}
+html.dark .n-menu .n-menu-item-content--selected, 
+html.dark .n-menu-item--selected, 
+html.dark .n-menu .n-menu-item-content--child-active {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+}
+
+.n-data-table {
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  border: none !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02) !important;
+  background: #ffffff !important;
+}
+
+.n-data-table-th {
+  background-color: #ffffff !important;
+  color: #86868b !important;
+  font-weight: 600 !important;
+  border-bottom: 1px solid rgba(0,0,0,0.03) !important;
+}
+
+.n-card {
+  border-radius: 20px !important;
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02) !important;
+}
+
+.n-button--primary-type {
+  border-radius: 980px !important;
+}
+
+/* Sidebar Bottom Fixes */
+.n-layout-sider .n-scrollbar-content {
+  height: 100% !important;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Fix text color for white sidebar */
+.n-layout-sider button.n-button {
+  color: #333333 !important;
+}
+.n-layout-sider button.n-button .n-icon {
+  color: #333333 !important;
+}
+
+/* Merge UI Setting, Theme, and Language buttons logically at the bottom */
+.n-layout-sider .n-scrollbar-content > div > div:nth-child(3) > div:nth-child(2) {
+  display: flex !important;
+  width: 100% !important;
+  gap: 8px !important;
+  flex-wrap: nowrap !important;
+  justify-content: space-between !important;
+}
+
+/* Make them look like action chips */
+.n-layout-sider .n-scrollbar-content > div > div:nth-child(3) > div:nth-child(2) > button,
+.n-layout-sider .n-scrollbar-content > div > div:nth-child(3) > div:nth-child(2) > .n-dropdown > button {
+  flex: 1 1 0% !important;
+  min-width: 0 !important;
+  padding: 0 4px !important;
+  justify-content: center !important;
+  border: none !important;
+  border-radius: 6px !important;
+  background-color: transparent !important;
+  height: 32px !important;
+  transition: all 0.2s;
+  display: flex !important;
+  align-items: center !important;
+  position: relative !important;
+}
+
+.n-layout-sider .n-scrollbar-content > div > div:nth-child(3) > div:nth-child(2) > button:hover,
+.n-layout-sider .n-scrollbar-content > div > div:nth-child(3) > div:nth-child(2) > .n-dropdown > button:hover {
+  background-color: rgba(0,0,0,0.04) !important;
+}
+
+/* Hide UI Setting text to make it compact */
+.n-layout-sider button[title="界面设置"] .n-button__content {
+  display: none !important;
+}
+.n-layout-sider button[title="界面设置"] .n-button__icon {
+  margin-right: 0 !important;
+}
+
+/* Fix spacing for icons */
+.n-layout-sider .n-scrollbar-content > div > div:nth-child(3) > div:nth-child(2) .n-icon {
+  margin-right: 4px;
+}
+.n-layout-sider .n-scrollbar-content > div > div:nth-child(3) > div:nth-child(2) button[title="界面设置"] .n-icon {
+  margin-right: 0;
+}
+
+/* Collapsed layout adaptation */
+.n-layout-sider--collapsed .n-scrollbar-content > div > div:nth-child(3) {
+  padding: 12px 4px !important;
+  align-items: center !important;
+}
+.n-layout-sider--collapsed .n-scrollbar-content > div > div:nth-child(3) > div:nth-child(2) {
+  flex-direction: column !important;
+  gap: 8px !important;
+  align-items: center !important; /* Center the buttons vertically */
+}
+.n-layout-sider--collapsed .n-scrollbar-content > div > div:nth-child(3) > div:nth-child(2) > button,
+.n-layout-sider--collapsed .n-scrollbar-content > div > div:nth-child(3) > div:nth-child(2) > .n-dropdown {
+  width: 32px !important;
+  height: 32px !important;
+  flex: none !important;
+}
+.n-layout-sider--collapsed .n-scrollbar-content > div > div:nth-child(3) > div:nth-child(2) > .n-dropdown > button {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.n-layout-sider--collapsed .action-text,
+.n-layout-sider--collapsed .n-button__content {
+  display: none !important;
+}
+/* Use the EXACT SAME absolute positioning method to center bottom icons */
+.n-layout-sider--collapsed .n-scrollbar-content > div > div:nth-child(3) > div:nth-child(2) .n-icon,
+.n-layout-sider--collapsed .n-scrollbar-content > div > div:nth-child(3) > div:nth-child(2) .n-button__icon {
+  position: absolute !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+}
+
+/* Fix NMenu icons not centering in collapsed state */
+.n-layout-sider--collapsed .n-menu-item-content {
+  padding: 0 !important;
+  margin: 0 8px !important;
+  justify-content: center !important;
+  position: relative !important;
+}
+.n-layout-sider--collapsed .n-menu-item-content::before {
+  left: 0 !important;
+  right: 0 !important;
+}
+.n-layout-sider--collapsed .n-menu-item-content .n-menu-item-content__icon {
+  position: absolute !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  grid-area: auto !important;
+  margin: 0 !important;
+  width: auto !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+.n-layout-sider--collapsed .n-menu-item-content .n-icon {
+  margin: 0 !important;
+}
+.n-layout-sider--collapsed .n-menu-item-content .n-menu-item-content__arrow {
+  display: none !important;
+}

@@ -1,0 +1,44 @@
+{
+  "taskDefinitionJson" : [
+    {
+      "code": 164597693773600,
+      "delayTime": "0",
+      "description": "",
+      "environmentCode": -1,
+      "failRetryInterval": "1",
+      "failRetryTimes": "0",
+      "flag": "YES",
+      "name": "test1",
+      "taskParams": {
+        "localParams": [],
+        "rawScript": "echo 'hello world'",
+        "resourceList": []
+      },
+      "taskPriority": "MEDIUM",
+      "taskType": "SHELL",
+      "timeout": 0,
+      "timeoutFlag": "CLOSE",
+      "timeoutNotifyStrategy": "",
+      "workerGroup": "default",
+      "cpuQuota": -1,
+      "memoryMax": -1,
+      "taskExecuteType": "BATCH"
+    }
+  ],
+  "taskRelationJson" : [
+    {
+      "name": "",
+      "preTaskCode": 0,
+      "preTaskVersion": 0,
+      "postTaskCode": 164597693773600,
+      "postTaskVersion": 0,
+      "conditionType": "NONE",
+      "conditionParams": {}
+    }
+  ],
+  "name" : "test1",
+  "executionType": "PARALLEL",
+  "description": "",
+  "globalParams": [],
+  "timeout": 0
+}
