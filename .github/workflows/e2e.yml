@@ -30,7 +30,8 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  pull-requests: write
+    contents: read
+    pull-requests: write
 
 jobs:
   paths-filter:
