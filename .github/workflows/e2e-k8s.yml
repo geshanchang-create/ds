@@ -25,6 +25,10 @@ on:
 
 name: E2E-K8S
 
+permissions:
+  contents: read
+  pull-requests: read
+
 concurrency:
   group: E2E-K8S-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
