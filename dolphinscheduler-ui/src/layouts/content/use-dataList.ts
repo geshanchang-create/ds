@@ -29,13 +29,13 @@ import {
   UnorderedListOutlined,
   ApiOutlined,
   DashboardOutlined,
-  CloudServerOutlined,
-  LineChartOutlined,
+  // CloudServerOutlined,
+  // LineChartOutlined,
   LockOutlined,
   TeamOutlined,
   UserOutlined,
-  BellOutlined,
-  AlertOutlined,
+  // BellOutlined,
+  // AlertOutlined,
   ToolOutlined,
   ApartmentOutlined,
   CompassOutlined,
@@ -202,6 +202,7 @@ export function useDataList() {
         key: 'datasource',
         icon: renderIcon(ApiOutlined)
       },
+      /*
       {
         label: () => h(NEllipsis, null, { default: () => t('menu.monitor') }),
         key: 'monitor',
@@ -247,6 +248,7 @@ export function useDataList() {
           }
         ]
       },
+      */
       {
         label: () => h(NEllipsis, null, { default: () => t('menu.security') }),
         key: 'security',
@@ -264,26 +266,32 @@ export function useDataList() {
                   key: '/security/user-manage',
                   icon: renderIcon(UserOutlined)
                 },
+                /*
                 {
                   label: t('menu.alarm_group_manage'),
                   key: '/security/alarm-group-manage',
                   icon: renderIcon(BellOutlined)
                 },
+                */
+                /*
                 {
                   label: t('menu.alarm_instance_manage'),
                   key: '/security/alarm-instance-manage',
                   icon: renderIcon(AlertOutlined)
                 },
+                */
                 {
                   label: t('menu.worker_group_manage'),
                   key: '/security/worker-group-manage',
                   icon: renderIcon(ToolOutlined)
                 },
+                /*
                 {
                   label: t('menu.yarn_queue_manage'),
                   key: '/security/yarn-queue-manage',
                   icon: renderIcon(ApartmentOutlined)
                 },
+                */
                 {
                   label: t('menu.environment_manage'),
                   key: '/security/environment-manage',
