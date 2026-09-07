@@ -1,0 +1,27 @@
+name: "Paths Filter"
+description: "Expose whether changed files match each configured path filter."
+
+inputs:
+  filters:
+    description: "YAML mapping of output names to glob patterns."
+    required: true
+
+outputs:
+  not-ignore:
+    description: "Whether a changed path matched the not-ignore filter."
+    value: ${{ steps.filter.outputs.not-ignore }}
+  db-schema:
+    description: "Whether a changed path matched the db-schema filter."
+    value: ${{ steps.filter.outputs.db-schema }}
+  helm-doc:
+    description: "Whether a changed path matched the helm-doc filter."
+    value: ${{ steps.filter.outputs.helm-doc }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Evaluate changed paths
+      id: filter
+      uses: dorny/paths-filter@v3
+      with:
+        filters: ${{ inputs.filters }}
