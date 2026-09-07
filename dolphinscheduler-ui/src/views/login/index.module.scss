@@ -140,3 +140,8 @@
   margin-right: 8px;
   object-fit: contain;
 }
+
+:global(.input-password input::-ms-reveal),
+:global(.input-password input::-ms-clear) {
+  display: none;
+}

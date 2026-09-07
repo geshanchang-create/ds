@@ -50,18 +50,11 @@ const Sidebar = defineComponent({
       default: []
     }
   },
-  setup() {
+  setup(props) {
     const collapsedRef = ref(false)
     const router = useRouter()
     const { t } = useI18n()
-    const defaultExpandedKeys = [
-      'workflow',
-      'task',
-      'service-manage',
-      'statistical-manage',
-      'task-group-manage'
-    ]
-    const expandedKeys = ref<string[]>(defaultExpandedKeys)
+    const expandedKeys = ref<string[]>([])
 
     const { handleMenuClick } = useMenuClick()
 
@@ -69,8 +62,40 @@ const Sidebar = defineComponent({
       router.push({ path: '/ui-setting' })
     }
 
+    const getDescendantKeys = (parentKey: string) => {
+      const descendantKeys = new Set<string>()
+
+      const visit = (options: any[], collecting = false) => {
+        options.forEach((option) => {
+          const isParent = option.key === parentKey
+          if (collecting && typeof option.key === 'string') {
+            descendantKeys.add(option.key)
+          }
+          if (Array.isArray(option.children)) {
+            visit(option.children, collecting || isParent)
+          }
+        })
+      }
+
+      visit(props.sideMenuOptions)
+      return descendantKeys
+    }
+
     const handleExpandedKeysChange = (keys: string[]) => {
-      expandedKeys.value = keys
+      const collapsedKeys = expandedKeys.value.filter(
+        (key) => !keys.includes(key)
+      )
+      const collapsedDescendantKeys = new Set<string>()
+
+      collapsedKeys.forEach((key) => {
+        getDescendantKeys(key).forEach((descendantKey) => {
+          collapsedDescendantKeys.add(descendantKey)
+        })
+      })
+
+      expandedKeys.value = keys.filter(
+        (key) => !collapsedDescendantKeys.has(key)
+      )
     }
 
     const handleCollapse = () => {
