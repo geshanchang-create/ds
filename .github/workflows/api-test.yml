@@ -25,6 +25,10 @@ on:
 
 name: API-Test
 
+permissions:
+  contents: read
+  pull-requests: read
+
 concurrency:
   group: api-test-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
