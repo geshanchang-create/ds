@@ -18,20 +18,15 @@
 package org.apache.dolphinscheduler.api.service;
 
 import org.apache.dolphinscheduler.api.dto.AlgorithmCatalog;
-import org.apache.dolphinscheduler.api.dto.AlgorithmExecutionReference;
-import org.apache.dolphinscheduler.api.dto.AlgorithmResultView;
+import org.apache.dolphinscheduler.dao.entity.User;
 
-import java.util.List;
+public interface AlgorithmCatalogService {
 
-public interface AlgorithmPlatformClient {
+    AlgorithmCatalog.Page<AlgorithmCatalog.Algorithm> queryAlgorithms(User user, long projectCode,
+                                                                      int pageNo, int pageSize);
 
-    List<AlgorithmCatalog.Algorithm> queryAlgorithms(long offset, int limit);
+    AlgorithmCatalog.Items<AlgorithmCatalog.Version> queryVersions(User user, long projectCode, long algorithmId);
 
-    List<AlgorithmCatalog.Version> queryAlgorithmVersions(long algorithmId);
-
-    List<AlgorithmCatalog.Model> queryAlgorithmModels(long versionId, boolean includeUnavailable);
-
-    AlgorithmExecutionReference queryExecution(long executionId);
-
-    AlgorithmResultView queryExecutionResult(long executionId);
+    AlgorithmCatalog.Items<AlgorithmCatalog.Model> queryModels(User user, long projectCode, long versionId,
+                                                               boolean includeUnavailable);
 }

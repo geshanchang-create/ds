@@ -61,7 +61,7 @@ public class AlgorithmPlatformConfiguration implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         if (!enabled) {
-            log.info("Algorithm platform result integration is disabled");
+            log.info("Algorithm platform integration is disabled");
             return;
         }
 
@@ -85,7 +85,7 @@ public class AlgorithmPlatformConfiguration implements Validator {
         }
 
         log.info(
-                "Algorithm platform result integration is enabled: baseUrl={}, executionIdVariable={}, "
+                "Algorithm platform integration is enabled: baseUrl={}, executionIdVariable={}, "
                         + "connectTimeoutMillis={}, readTimeoutMillis={}, maxResponseBytes={}",
                 baseUrl,
                 executionIdVariable,
