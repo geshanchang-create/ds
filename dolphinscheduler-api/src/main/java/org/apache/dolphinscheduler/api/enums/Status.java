@@ -591,8 +591,8 @@ public enum Status {
     DELETE_WORKFLOW_LINEAGE_ERROR(1403003, "delete workflow lineage error", "删除工作流血缘错误"),
 
     QUERY_ALGORITHM_RESULT_ERROR(1500001, "query algorithm result error", "查询算法结果失败"),
-    ALGORITHM_PLATFORM_DISABLED(1500002, "algorithm platform result integration is disabled",
-            "算法平台结果集成未启用"),
+    ALGORITHM_PLATFORM_DISABLED(1500002, "algorithm platform integration is disabled",
+            "算法平台集成未启用"),
     ALGORITHM_EXECUTION_ID_NOT_FOUND(1500003,
             "task instance {0} does not contain output variable {1}",
             "任务实例[{0}]中没有输出变量[{1}]"),
@@ -613,6 +613,10 @@ public enum Status {
     ALGORITHM_RESULT_BINDING_MISMATCH(1500011,
             "algorithm execution {0} does not belong to task instance {1}",
             "算法执行[{0}]不属于任务实例[{1}]"),
+    QUERY_ALGORITHM_CATALOG_ERROR(1500012, "query algorithm catalog error", "查询算法目录失败"),
+    ALGORITHM_CATALOG_NOT_FOUND(1500013, "algorithm or version does not exist", "算法或版本不存在"),
+    ALGORITHM_CATALOG_INVALID(1500014, "algorithm platform returned an invalid catalog", "算法平台返回的目录数据无效"),
+    ALGORITHM_CATALOG_UNAVAILABLE(1500015, "algorithm catalog service is unavailable", "算法目录服务暂时不可用"),
     ;
 
     @Getter

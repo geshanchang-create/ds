@@ -18,6 +18,7 @@
 package org.apache.dolphinscheduler.api.service.impl;
 
 import org.apache.dolphinscheduler.api.configuration.AlgorithmPlatformConfiguration;
+import org.apache.dolphinscheduler.api.dto.AlgorithmCatalog;
 import org.apache.dolphinscheduler.api.dto.AlgorithmExecutionReference;
 import org.apache.dolphinscheduler.api.dto.AlgorithmResultView;
 import org.apache.dolphinscheduler.api.enums.Status;
@@ -30,26 +31,177 @@ import org.apache.dolphinscheduler.common.utils.OkHttpUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 @Slf4j
 @Service
 public class AlgorithmPlatformClientImpl implements AlgorithmPlatformClient {
 
     private static final String API_KEY_HEADER = "X-API-Key";
+    private static final OkHttpClient CATALOG_HTTP_CLIENT = new OkHttpClient.Builder()
+            .followRedirects(false)
+            .followSslRedirects(false)
+            .build();
 
     private final AlgorithmPlatformConfiguration configuration;
 
     @Autowired
     public AlgorithmPlatformClientImpl(AlgorithmPlatformConfiguration configuration) {
         this.configuration = configuration;
+    }
+
+    @Override
+    public List<AlgorithmCatalog.Algorithm> queryAlgorithms(long offset, int limit) {
+        List<AlgorithmCatalog.Algorithm> rows = getCatalog(
+                "/api/service/catalog/algorithms?offset=" + offset + "&limit=" + limit,
+                AlgorithmCatalog.Algorithm.class);
+        if (rows.size() > limit) {
+            throw new ServiceException(Status.ALGORITHM_CATALOG_INVALID);
+        }
+        return rows;
+    }
+
+    @Override
+    public List<AlgorithmCatalog.Version> queryAlgorithmVersions(long algorithmId) {
+        return getCatalog("/api/service/catalog/algorithms/" + algorithmId + "/versions",
+                AlgorithmCatalog.Version.class);
+    }
+
+    @Override
+    public List<AlgorithmCatalog.Model> queryAlgorithmModels(long versionId, boolean includeUnavailable) {
+        return getCatalog("/api/service/catalog/versions/" + versionId + "/models?include_unavailable="
+                + includeUnavailable, AlgorithmCatalog.Model.class);
+    }
+
+    private <T> List<T> getCatalog(String path, Class<T> type) {
+        ensureEnabled();
+        if (StringUtils.isBlank(configuration.getApiKey()) || StringUtils.isBlank(configuration.getBaseUrl())) {
+            throw new ServiceException(Status.ALGORITHM_CATALOG_UNAVAILABLE);
+        }
+        String body;
+        try {
+            OkHttpClient http = CATALOG_HTTP_CLIENT.newBuilder()
+                    .connectTimeout(configuration.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
+                    .readTimeout(configuration.getReadTimeoutMillis(), TimeUnit.MILLISECONDS)
+                    .callTimeout((long) configuration.getConnectTimeoutMillis()
+                            + configuration.getReadTimeoutMillis(), TimeUnit.MILLISECONDS)
+                    .build();
+            Request request = new Request.Builder().url(buildUrl(path))
+                    .header("Accept", "application/json")
+                    .header(API_KEY_HEADER, configuration.getApiKey()).get().build();
+            try (Response response = http.newCall(request).execute()) {
+                switch (response.code()) {
+                    case 200:
+                        break;
+                    case 401:
+                    case 403:
+                        throw new ServiceException(Status.ALGORITHM_PLATFORM_AUTHENTICATION_FAILED);
+                    case 404:
+                        throw new ServiceException(Status.ALGORITHM_CATALOG_NOT_FOUND);
+                    default:
+                        throw new ServiceException(Status.ALGORITHM_CATALOG_UNAVAILABLE);
+                }
+                if (response.body() == null) {
+                    throw new ServiceException(Status.ALGORITHM_CATALOG_INVALID);
+                }
+                // Bound the actual stream, including chunked responses without Content-Length.
+                try (
+                        InputStream input = response.body().byteStream();
+                        ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+                    byte[] buffer = new byte[8192];
+                    int count;
+                    long bytes = 0;
+                    while ((count = input.read(buffer)) != -1) {
+                        bytes += count;
+                        if (bytes > configuration.getMaxResponseBytes()) {
+                            throw new ServiceException(Status.ALGORITHM_CATALOG_INVALID);
+                        }
+                        output.write(buffer, 0, count);
+                    }
+                    body = new String(output.toByteArray(), StandardCharsets.UTF_8);
+                }
+            }
+        } catch (ServiceException ex) {
+            throw ex;
+        } catch (IOException | IllegalArgumentException ex) {
+            // Never include credentials, upstream response bodies, or request headers in errors.
+            throw new ServiceException(Status.ALGORITHM_CATALOG_UNAVAILABLE);
+        }
+        try {
+            JsonNode array = JSONUtils.parseObject(body, JsonNode.class);
+            if (array == null || !array.isArray()) {
+                throw new ServiceException(Status.ALGORITHM_CATALOG_INVALID);
+            }
+            List<T> result = new ArrayList<>();
+            Set<Long> ids = new HashSet<>();
+            for (JsonNode row : array) {
+                validateCatalogRow(row, type);
+                if (!ids.add(row.path("id").longValue())) {
+                    throw new ServiceException(Status.ALGORITHM_CATALOG_INVALID);
+                }
+                result.add(JSONUtils.parseObject(row.toString(), type));
+            }
+            return result;
+        } catch (ServiceException ex) {
+            throw ex;
+        } catch (RuntimeException ex) {
+            throw new ServiceException(Status.ALGORITHM_CATALOG_INVALID);
+        }
+    }
+
+    private void validateCatalogRow(JsonNode row, Class<?> type) {
+        boolean valid = row.isObject() && positiveId(row.path("id"));
+        if (type == AlgorithmCatalog.Algorithm.class) {
+            valid &= nonBlankText(row.path("name"))
+                    && row.has("description")
+                    && (row.path("description").isNull() || row.path("description").isTextual());
+        } else {
+            JsonNode reasons = row.path("unavailable_reasons");
+            valid &= nonBlankText(row.path("version")) && row.path("available").isBoolean() && reasons.isArray();
+            if (reasons.isArray()) {
+                for (JsonNode reason : reasons) {
+                    valid &= nonBlankText(reason);
+                }
+                valid &= row.path("available").asBoolean() == (reasons.size() == 0);
+            }
+            if (type == AlgorithmCatalog.Version.class) {
+                valid &= positiveId(row.path("algorithm_id"));
+            } else {
+                valid &= positiveId(row.path("algorithm_version_id")) && nonBlankText(row.path("status"));
+                valid &= !row.path("available").asBoolean() || "AVAILABLE".equals(row.path("status").asText());
+            }
+        }
+        if (!valid) {
+            throw new ServiceException(Status.ALGORITHM_CATALOG_INVALID);
+        }
+    }
+
+    private boolean positiveId(JsonNode value) {
+        return value.isIntegralNumber() && value.canConvertToLong() && value.longValue() > 0;
+    }
+
+    private boolean nonBlankText(JsonNode value) {
+        return value.isTextual() && StringUtils.isNotBlank(value.textValue());
     }
 
     @Override
