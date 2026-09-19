@@ -617,6 +617,15 @@ public enum Status {
     ALGORITHM_CATALOG_NOT_FOUND(1500013, "algorithm or version does not exist", "算法或版本不存在"),
     ALGORITHM_CATALOG_INVALID(1500014, "algorithm platform returned an invalid catalog", "算法平台返回的目录数据无效"),
     ALGORITHM_CATALOG_UNAVAILABLE(1500015, "algorithm catalog service is unavailable", "算法目录服务暂时不可用"),
+    ALGORITHM_RUN_REQUEST_INVALID(1500016, "algorithm platform rejected run request {0}",
+            "算法平台拒绝运行请求[{0}]"),
+    ALGORITHM_RUN_NOT_FOUND(1500017, "algorithm platform run {0} was not found", "未找到算法平台运行[{0}]"),
+    ALGORITHM_RUN_CONFLICT(1500018, "algorithm platform run request {0} conflicts with an existing request",
+            "算法平台运行请求[{0}]与已有请求冲突"),
+    ALGORITHM_RUN_RESPONSE_INVALID(1500019, "algorithm platform returned an invalid run response for {0}",
+            "算法平台为运行[{0}]返回了无效响应"),
+    ALGORITHM_RUN_UNAVAILABLE(1500020, "algorithm platform run service is unavailable for {0}",
+            "算法平台运行服务[{0}]暂时不可用"),
     ;
 
     @Getter

@@ -29,6 +29,18 @@ public class AlgorithmExecutionReference {
     @JsonAlias("execution_id")
     private Long executionId;
 
+    @JsonAlias("request_id")
+    private String requestId;
+
+    @JsonAlias("algorithm_version_id")
+    private Long algorithmVersionId;
+
+    @JsonAlias("model_version_id")
+    private Long modelVersionId;
+
+    @JsonAlias("run_type")
+    private String runType;
+
     @JsonAlias("workflow_id")
     private String workflowId;
 
@@ -36,4 +48,22 @@ public class AlgorithmExecutionReference {
     private String taskId;
 
     private String status;
+
+    @JsonAlias("error_message")
+    private String errorMessage;
+
+    @JsonAlias("retry_count")
+    private Integer retryCount;
+
+    @JsonAlias("max_retries")
+    private Integer maxRetries;
+
+    @JsonAlias("created_at")
+    private String createdAt;
+
+    @JsonAlias("started_at")
+    private String startedAt;
+
+    @JsonAlias("finished_at")
+    private String finishedAt;
 }

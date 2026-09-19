@@ -20,6 +20,7 @@ package org.apache.dolphinscheduler.api.service;
 import org.apache.dolphinscheduler.api.dto.AlgorithmCatalog;
 import org.apache.dolphinscheduler.api.dto.AlgorithmExecutionReference;
 import org.apache.dolphinscheduler.api.dto.AlgorithmResultView;
+import org.apache.dolphinscheduler.api.dto.AlgorithmRun;
 
 import java.util.List;
 
@@ -31,7 +32,21 @@ public interface AlgorithmPlatformClient {
 
     List<AlgorithmCatalog.Model> queryAlgorithmModels(long versionId, boolean includeUnavailable);
 
+    AlgorithmRun.TrainingReference submitTraining(AlgorithmRun.TrainingRequest request);
+
+    AlgorithmRun.TrainingReference queryTraining(long trainingId);
+
+    List<AlgorithmRun.LogEntry> queryTrainingLogs(long trainingId);
+
+    AlgorithmRun.TrainingReference stopTraining(long trainingId);
+
+    AlgorithmExecutionReference submitExecution(AlgorithmRun.ExecutionRequest request);
+
     AlgorithmExecutionReference queryExecution(long executionId);
+
+    List<AlgorithmRun.LogEntry> queryExecutionLogs(long executionId);
+
+    AlgorithmExecutionReference stopExecution(long executionId);
 
     AlgorithmResultView queryExecutionResult(long executionId);
 }
